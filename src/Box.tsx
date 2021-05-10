@@ -1,24 +1,32 @@
 import { useFrame } from "@react-three/fiber"
 import React, { useRef, useState } from "react"
-import { Vector3 } from "three"
+import { Mesh, Vector3 } from "three"
 
-function Box(props: { position: Vector3 }) {
-  const mesh = useRef()
+function Box(props: { position: [number, number, number] | Vector3 }) {
+  const meshRef = useRef<Mesh>()
   const [hovered, setHover] = useState(false)
   const [active, setActive] = useState(false)
-  useFrame((state, delta) => (mesh.current.rotation.x += 0.01))
+  useFrame((state, delta) => {
+    if (meshRef.current) meshRef.current.rotation.x += 0.01
+  })
 
   return (
     <mesh
       {...props}
-      ref={mesh}
-      scale={active ? 1.5 : 1}
+      ref={meshRef}
+      scale={active ? 1 : 0.5}
       onClick={(event) => setActive(!active)}
-      onPointerOver={(event) => setHover(true)}
-      onPointerOut={(event) => setHover(false)}
+      onPointerOver={(event) => {
+        setHover(true)
+        document.body.style.cursor = "pointer"
+      }}
+      onPointerOut={(event) => {
+        setHover(false)
+        document.body.style.cursor = "initial"
+      }}
     >
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? "hotpink" : "orange"} />
+      <meshStandardMaterial color={hovered ? "#4a47a3" : "#a7c5eb"} />
     </mesh>
   )
 }
