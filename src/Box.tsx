@@ -6,8 +6,9 @@ function Box(props: { position: [number, number, number] | Vector3 }) {
   const meshRef = useRef<Mesh>()
   const [hovered, setHover] = useState(false)
   const [active, setActive] = useState(false)
-  useFrame((state, delta) => {
-    if (meshRef.current) meshRef.current.rotation.x += 0.01
+  useFrame(({ clock }) => {
+    if (meshRef.current)
+      meshRef.current.rotation.x = Math.cos(clock.getElapsedTime())
   })
 
   return (
